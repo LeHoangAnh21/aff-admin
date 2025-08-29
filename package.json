@@ -20,7 +20,7 @@
   "engines": {
     "node": ">= 16",
     "npm": ">= 8",
-    "yarn": ">= 1",
+    "yarn": ">= 1"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.79.0",
