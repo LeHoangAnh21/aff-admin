@@ -1,0 +1,89 @@
+{
+  "type": "module",
+  "name": "flowbite-react-admin-dashboard",
+  "version": "1.1.0",
+  "descrption": "flowbite-react admin dashboard",
+  "license": "UNLICENSED",
+  "author": "Conner Davis <cdavis@scu.edu>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/themesberg/flowbite-react-admin-dashboard.git"
+  },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host",
+    "format": "prettier --check --ignore-path .gitignore --write .",
+    "lint": "eslint --ignore-path .gitignore .",
+    "preview": "vite preview --host",
+    "typecheck": "tsc"
+  },
+  "engines": {
+    "node": ">= 16",
+    "npm": ">= 8",
+    "yarn": ">= 1",
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.79.0",
+    "apexcharts": "^3.41.0",
+    "axios": "^1.7.4",
+    "classnames": "^2.3.2",
+    "flowbite": "^1.8.1",
+    "flowbite-react": "^0.5.0",
+    "jotai": "^2.9.3",
+    "qs": "^6.13.0",
+    "query-string": "^9.1.0",
+    "react-apexcharts": "^1.4.1",
+    "react-datepicker": "^8.2.1",
+    "react-icons": "^4.10.1",
+    "react-quill": "^2.0.0",
+    "react-select": "^5.8.1",
+    "react-sortablejs": "^6.1.4",
+    "react-toastify": "^11.0.5",
+    "sortablejs": "^1.15.0",
+    "svgmap": "^2.10.1",
+    "use-debounce": "^10.0.3",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.1",
+    "@types/qs": "^6.9.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/sortablejs": "^1.15.1",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.46.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.33.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-tailwindcss": "^3.13.0",
+    "postcss": "^8.4.27",
+    "prettier": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.14.2",
+    "react-router-dom": "^6.26.1",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.1.6",
+    "vite": "^4.4.7",
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vitest": "^0.33.0"
+  },
+  "private": true,
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}
