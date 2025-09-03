@@ -67,20 +67,20 @@ const ExampleSidebar: FC = function () {
                 >
                   Trang chủ
                 </Sidebar.Item>
-                {userData.roleLabel === "ADMIN" && (
-                  <Sidebar.Item
-                    as={Link}
-                    to="/fee"
-                    icon={HiCurrencyDollar}
-                    className={
-                      "/fee" === currentPage
-                        ? "bg-gray-100 dark:bg-gray-700"
-                        : ""
-                    }
-                  >
-                    Phí hoa hồng
-                  </Sidebar.Item>
-                )}
+                {/*{userData.roleLabel === "ADMIN" && (*/}
+                {/*  <Sidebar.Item*/}
+                {/*    as={Link}*/}
+                {/*    to="/fee"*/}
+                {/*    icon={HiCurrencyDollar}*/}
+                {/*    className={*/}
+                {/*      "/fee" === currentPage*/}
+                {/*        ? "bg-gray-100 dark:bg-gray-700"*/}
+                {/*        : ""*/}
+                {/*    }*/}
+                {/*  >*/}
+                {/*    Phí hoa hồng*/}
+                {/*  </Sidebar.Item>*/}
+                {/*)}*/}
                 <Sidebar.Collapse
                   icon={HiUsers}
                   label="Quản lý"

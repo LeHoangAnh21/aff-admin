@@ -47,6 +47,20 @@ const Account = class {
         return response;
     }
 
+    static async updatePass(access_token, body) {
+        const response: any = await ServiceAPI.patch(`/api/auth/pass/${body.userId}`, {password: body.password}, {
+            headers: {
+                "Authorization": "Bearer " + access_token
+            }
+        })
+
+        if ('error' in response) {
+            throw new Error(response.message);
+        }
+
+        return response;
+    }
+
     static async getUserInfo(access_token) {
         try {
             const response: any = await ServiceAPI.get('/api/auth/admin', {

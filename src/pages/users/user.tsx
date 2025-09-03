@@ -10,13 +10,15 @@ import { useQuery } from "@tanstack/react-query";
 import { userFilter as userFilterStore } from "@/stores/users/account";
 import { useAtom } from "jotai";
 import Select from "react-select";
+import SearchInput from "@/components/SearchInput";
+import {toast} from "react-toastify";
 
 const UserPage = () => {
   const [sessionToken, setSessionToken] = useState("");
   const [userFilter, setUserFilter] = useAtom(userFilterStore);
 
   const { data, error, isFetching } = useQuery({
-    queryKey: ["users", sessionToken, userFilter.roles, userFilter.page],
+    queryKey: ["users", sessionToken, userFilter.roles, userFilter.page, userFilter.phoneNumber],
     queryFn: async () => {
       if (!sessionToken) {
         throw new Error("Vui lòng đăng nhập để sử dụng tính năng này");
@@ -26,6 +28,7 @@ const UserPage = () => {
       const res = await Account.list(sessionToken, {
         ...userFilter,
         roles: roles,
+        phoneNumber: userFilter.phoneNumber,
       });
       return res;
     },
@@ -121,6 +124,17 @@ const UserPage = () => {
                 className="min-w-[300px]"
               />{" "}
             </div>
+            <div className="mb-3 ml-3 w-[30rem] items-center dark:divide-gray-700 sm:mb-0 sm:flex sm:divide-x sm:divide-gray-100">
+              <SearchInput
+                type="number"
+                value={userFilter.phoneNumber}
+                onChange={(e: any) => {
+                  setUserFilter((pre) => ({ ...pre, phoneNumber: e.target.value.trim(), page: 1 }));
+                }}
+                placeholder="Tìm kiếm theo SĐT"
+                className="inline-block w-full max-w-[300px]"
+              />
+            </div>
             {/* <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
               <AddUserModal />
             </div> */}
@@ -147,6 +161,44 @@ const UserPage = () => {
 };
 
 const AllUsersTable = ({ data, isLoading }) => {
+  const [sessionToken, setSessionToken] = useState("");
+  const [passwords, setPasswords] = useState<{ [key: string]: string }>({});
+
+  const handlePasswordChange = (userId: string, value: string) => {
+    setPasswords(prev => ({ ...prev, [userId]: value }));
+  };
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("userAccount");
+
+    if (storedData) {
+      setSessionToken(localStorage.getItem("userAccount") || "");
+    }
+  }, []);
+
+  const updatePassword = async (userId: string) => {
+    const password = passwords[userId] || '';
+    if (!/^.{6,}$/.test(password)) {
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự!", {
+        autoClose: 5000,
+      });
+      return;
+    }
+
+    try {
+      await Account.updatePass(sessionToken, { userId, password });
+
+      toast.success("Cập nhật mật khẩu thành công!", {
+        autoClose: 5000,
+      });
+      setPasswords(prev => ({ ...prev, [userId]: '' }));
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc báo cho lập trình viên!", {
+        autoClose: 5000,
+      });
+    }
+  };
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -168,14 +220,14 @@ const AllUsersTable = ({ data, isLoading }) => {
           Tên chủ tài khoản
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
-          Số lần mua hàng
+          Tổng chi tiêu
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           TK hoàn tiền (VNĐ)
         </Table.HeadCell>
-        <Table.HeadCell className="p-4 text-center">
-          TK tích lũy (VNĐ)
-        </Table.HeadCell>
+        {/*<Table.HeadCell className="p-4 text-center">*/}
+        {/*  TK tích lũy (VNĐ)*/}
+        {/*</Table.HeadCell>*/}
         <Table.HeadCell className="p-4 text-center">
           TK tiêu dùng (VNĐ)
         </Table.HeadCell>
@@ -194,7 +246,12 @@ const AllUsersTable = ({ data, isLoading }) => {
         <Table.HeadCell className="p-4 text-center">
           Người giới thiệu
         </Table.HeadCell>{" "}
-        <Table.HeadCell className="p-4 text-center">Thời gian</Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Thời gian gia nhập
+        </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Cập nhật mật khẩu
+        </Table.HeadCell>
         {/* <Table.HeadCell className="p-4 text-center">Thao tác</Table.HeadCell> */}
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
@@ -223,7 +280,7 @@ const AllUsersTable = ({ data, isLoading }) => {
             </Table.Cell>
           </Table.Row>
         ) : (
-          data.map((item, index) => (
+          data.map((item) => (
             <Table.Row
               key={item.id}
               className="hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -280,15 +337,12 @@ const AllUsersTable = ({ data, isLoading }) => {
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.cashbackAccount.toLocaleString("vi-VN")}
               </Table.Cell>
-              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
-                {item.accumulatedAccount.toLocaleString("vi-VN")}
-              </Table.Cell>
+              {/*<Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">*/}
+              {/*  {item.accumulatedAccount.toLocaleString("vi-VN")}*/}
+              {/*</Table.Cell>*/}
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.consumerAccount.toLocaleString("vi-VN")}
               </Table.Cell>
-              {/* <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
-                {item.liabilityAccount.toLocaleString("vi-VN")}
-              </Table.Cell> */}
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.pendingCashbackAccount.toLocaleString("vi-VN")}
               </Table.Cell>
@@ -304,11 +358,25 @@ const AllUsersTable = ({ data, isLoading }) => {
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.createdAt).toLocaleString("vi-VN", optionDate)}
               </Table.Cell>
-              {/* <Table.Cell className="p-4">
+              <Table.Cell className="p-4">
                 <div className="flex justify-center items-center gap-x-3 whitespace-nowrap">
-                  <EditUserModal data={item} index={index} getList={getList} />
+                  <div className="mb-3 ml-3 w-[20rem] items-center dark:divide-gray-700 sm:mb-0 sm:flex sm:divide-x sm:divide-gray-100">
+                    <SearchInput
+                      type="text"
+                      placeholder="Nhập mật khẩu mới"
+                      value={passwords[item.id] || ''}
+                      onChange={(e: any) => handlePasswordChange(item.id, e.target.value)}
+                      className="inline-block w-full"
+                    />
+                  </div>
+                  <div
+                    className="cursor-pointer text-blue-600 hover:underline"
+                    onClick={() => updatePassword(item.id)}
+                  >
+                    Cập nhật
+                  </div>
                 </div>
-              </Table.Cell> */}
+              </Table.Cell>
             </Table.Row>
           ))
         )}

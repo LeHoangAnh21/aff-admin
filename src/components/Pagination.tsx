@@ -28,7 +28,7 @@ const Pagination = ({ changePage, total, page, pageSize = 10 }: any) => {
           <span className="font-semibold text-gray-900 dark:text-white">
             {total}
           </span>{" "}
-          sản phẩm
+          mục
         </span>
       </div>
       <div className="flex items-center space-x-3">
