@@ -17,7 +17,7 @@ const UserPage = () => {
   const [sessionToken, setSessionToken] = useState("");
   const [userFilter, setUserFilter] = useAtom(userFilterStore);
 
-  const { data, error, isFetching } = useQuery({
+  const { data, error, isFetching, refetch } = useQuery({
     queryKey: ["users", sessionToken, userFilter.roles, userFilter.page, userFilter.phoneNumber],
     queryFn: async () => {
       if (!sessionToken) {
@@ -145,7 +145,7 @@ const UserPage = () => {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllUsersTable data={data?.data || []} isLoading={isFetching} />
+              <AllUsersTable data={data?.data || []} isLoading={isFetching} refetch={refetch} />
             </div>
           </div>
         </div>
@@ -160,9 +160,10 @@ const UserPage = () => {
   );
 };
 
-const AllUsersTable = ({ data, isLoading }) => {
+const AllUsersTable = ({ data, isLoading, refetch }) => {
   const [sessionToken, setSessionToken] = useState("");
   const [passwords, setPasswords] = useState<{ [key: string]: string }>({});
+  const [role, setRole] = useState<string>('');
 
   const handlePasswordChange = (userId: string, value: string) => {
     setPasswords(prev => ({ ...prev, [userId]: value }));
@@ -178,20 +179,38 @@ const AllUsersTable = ({ data, isLoading }) => {
 
   const updatePassword = async (userId: string) => {
     const password = passwords[userId] || '';
-    if (!/^.{6,}$/.test(password)) {
+    let validRole = ''
+
+    if (!role && !password) {
+      toast.error("Không có gì thay đổi!", {
+        autoClose: 5000,
+      });
+      return;
+    }
+
+    if (!/^.{6,}$/.test(password) && password) {
       toast.error("Mật khẩu phải có ít nhất 6 ký tự!", {
         autoClose: 5000,
       });
       return;
     }
 
-    try {
-      await Account.updatePass(sessionToken, { userId, password });
+    if (role) {
+      const validRoles = ['CONSUMER', 'VIP', 'SYSTEM_MANAGER', 'SALES_DIRECTOR', 'SENIOR_SALES_DIRECTOR'];
+      const isValid = validRoles.includes(role);
 
-      toast.success("Cập nhật mật khẩu thành công!", {
+      if(isValid) validRole = role
+    }
+
+    try {
+      await Account.updatePass(sessionToken, { userId, password, validRole });
+
+      toast.success("Cập nhật thông tin thành công!", {
         autoClose: 5000,
       });
       setPasswords(prev => ({ ...prev, [userId]: '' }));
+      setRole('')
+      refetch()
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc báo cho lập trình viên!", {
         autoClose: 5000,
@@ -248,6 +267,9 @@ const AllUsersTable = ({ data, isLoading }) => {
         </Table.HeadCell>{" "}
         <Table.HeadCell className="p-4 text-center">
           Thời gian gia nhập
+        </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Cập nhật role mới
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Cập nhật mật khẩu
@@ -357,6 +379,19 @@ const AllUsersTable = ({ data, isLoading }) => {
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.createdAt).toLocaleString("vi-VN", optionDate)}
+              </Table.Cell>
+              <Table.Cell className="min-w-[250px] p-4">
+                <select
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  value={role} onChange={(e) => setRole(e.target.value)}
+                >
+                  <option value="">Chọn vai trò</option>
+                  <option value="CONSUMER">Consumer</option>
+                  <option value="VIP">VIP</option>
+                  <option value="SYSTEM_MANAGER">System Manager</option>
+                  <option value="SALES_DIRECTOR">Sales Director</option>
+                  <option value="SENIOR_SALES_DIRECTOR">Senior Sales Director</option>
+                </select>
               </Table.Cell>
               <Table.Cell className="p-4">
                 <div className="flex justify-center items-center gap-x-3 whitespace-nowrap">

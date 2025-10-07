@@ -134,7 +134,20 @@ const ConsultationPage = () => {
   );
 };
 
-const ListTable = ({ data, isLoading, handleUpdate, isDisable }: any) => {
+const ListTable = ({ data, isLoading, handleUpdate }: any) => {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
+
+  const openModal = (item) => {
+    setSelectedQuestion(item);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedQuestion(null);
+  };
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -177,7 +190,7 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }: any) => {
             </Table.Cell>
           </Table.Row>
         ) : (
-          data?.map((item, index) => (
+          data?.map((item) => (
             <Table.Row
               key={item.id}
               className="hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -192,7 +205,9 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }: any) => {
                 {item.phoneNumber}
               </Table.Cell>
               <Table.Cell className="whitespace-nowrap text-center p-4 text-base font-medium text-gray-900 dark:text-white">
-                {item.question}
+                <div className="truncate max-w-xs cursor-pointer">
+                  {item.question}
+                </div>
               </Table.Cell>
               <Table.Cell className="whitespace-nowrap text-center p-4 text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.createdAt).toLocaleString("vi-VN", optionDate)}
@@ -210,7 +225,12 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }: any) => {
               </Table.Cell>
               <Table.Cell className="p-4">
                 <div className="flex items-center justify-center gap-x-3 whitespace-nowrap">
-                  {/* <EditClaimModal data={item} handleUpdate={handleUpdate} /> */}
+                  <Button
+                    color="warning"
+                    onClick={() => openModal(item)}
+                  >
+                    Xem chi tiết
+                  </Button>
                   <Button
                     color="primary"
                     disabled={item.status !== "PENDING"}
@@ -223,6 +243,83 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }: any) => {
             </Table.Row>
           ))
         )}
+
+        <Modal show={showModal} onClose={closeModal}>
+          <div className="max-h-[90vh] overflow-hidden flex flex-col">
+            <Modal.Header>
+              Chi tiết câu hỏi
+            </Modal.Header>
+            <Modal.Body className="overflow-y-auto">
+              {selectedQuestion && (
+                <div className="space-y-4">
+                  {/* Thông tin người gửi */}
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Họ tên</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{selectedQuestion.fullName}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{selectedQuestion.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Số điện thoại</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{selectedQuestion.phoneNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Thời gian</p>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {new Date(selectedQuestion.createdAt).toLocaleString("vi-VN", optionDate)}
+                        </p>
+                      </div>
+                      <div className="flex items-center">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mr-3">Trạng thái</p>
+                        <div>
+                          {selectedQuestion.status === "PENDING" ? (
+                            <Badge color="warning">Đang chờ</Badge>
+                          ) : (
+                            <Badge color="success">Đã xử lý</Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Nội dung câu hỏi */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      Nội dung câu hỏi
+                    </h3>
+                    <div className="bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                      <p className="text-base text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                        {selectedQuestion.question}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <div className="flex justify-end gap-3 w-full">
+                {selectedQuestion?.status === "PENDING" && (
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      handleUpdate(selectedQuestion.id, "DONE");
+                      closeModal();
+                    }}
+                  >
+                    Đánh dấu đã xử lý
+                  </Button>
+                )}
+                <Button color="gray" onClick={closeModal}>
+                  Đóng
+                </Button>
+              </div>
+            </Modal.Footer>
+          </div>
+        </Modal>
       </Table.Body>
     </Table>
   );

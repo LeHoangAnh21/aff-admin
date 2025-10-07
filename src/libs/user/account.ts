@@ -48,7 +48,7 @@ const Account = class {
     }
 
     static async updatePass(access_token, body) {
-        const response: any = await ServiceAPI.patch(`/api/auth/pass/${body.userId}`, {password: body.password}, {
+        const response: any = await ServiceAPI.patch(`/api/auth/pass/${body.userId}`, {password: body.password, role: body.validRole ? body.validRole : null}, {
             headers: {
                 "Authorization": "Bearer " + access_token
             }
