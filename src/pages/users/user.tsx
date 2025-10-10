@@ -163,10 +163,14 @@ const UserPage = () => {
 const AllUsersTable = ({ data, isLoading, refetch }) => {
   const [sessionToken, setSessionToken] = useState("");
   const [passwords, setPasswords] = useState<{ [key: string]: string }>({});
-  const [role, setRole] = useState<string>('');
+  const [roles, setRoles] = useState<{ [key: string]: string }>({});
 
   const handlePasswordChange = (userId: string, value: string) => {
     setPasswords(prev => ({ ...prev, [userId]: value }));
+  };
+
+  const handleRoleChange = (userId: string, value: string) => {
+    setRoles(prev => ({ ...prev, [userId]: value }));
   };
 
   useEffect(() => {
@@ -179,6 +183,7 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
 
   const updatePassword = async (userId: string) => {
     const password = passwords[userId] || '';
+    const role = roles[userId] || '';
     let validRole = ''
 
     if (!role && !password) {
@@ -209,7 +214,7 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
         autoClose: 5000,
       });
       setPasswords(prev => ({ ...prev, [userId]: '' }));
-      setRole('')
+      setRoles(prev => ({ ...prev, [userId]: '' }));
       refetch()
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc báo cho lập trình viên!", {
@@ -383,7 +388,9 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
               <Table.Cell className="min-w-[250px] p-4">
                 <select
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                  value={role} onChange={(e) => setRole(e.target.value)}
+
+                  value={roles[item.id] || ''}
+                  onChange={(e: any) => handleRoleChange(item.id, e.target.value)}
                 >
                   <option value="">Chọn vai trò</option>
                   <option value="CONSUMER">Consumer</option>
