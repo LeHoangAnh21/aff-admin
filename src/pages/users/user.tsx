@@ -12,6 +12,7 @@ import { useAtom } from "jotai";
 import Select from "react-select";
 import SearchInput from "@/components/SearchInput";
 import {toast} from "react-toastify";
+import {Link} from "react-router-dom";
 
 const UserPage = () => {
   const [sessionToken, setSessionToken] = useState("");
@@ -235,6 +236,12 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
         <Table.HeadCell className="p-4 text-center">
           Căn cước công dân
         </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Căn cước công dân mặt trước
+        </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Căn cước công dân mặt sau
+        </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">Ngày sinh</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">Ngân hàng</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
@@ -342,6 +349,15 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.identifiCard}
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                {item.frontOfIdentifiCardImg
+                  ? <Link to={`${item.frontOfIdentifiCardImg}`} target='_blank' className='text-blue-600 underline'>
+                    Mặt trước
+                </Link> : ''}
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                {item.backOfIdentifiCardImg ? <Link to={`${item.backOfIdentifiCardImg}`} target='_blank' className='text-blue-600 underline'>Mặt sau</Link> : ''}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.birthday).toLocaleString(
