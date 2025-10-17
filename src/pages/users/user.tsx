@@ -366,6 +366,9 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                 )}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                {item.placeOfResidence || ''}
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.bankName}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
