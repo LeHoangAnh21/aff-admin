@@ -243,6 +243,7 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
           Căn cước công dân mặt sau
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">Ngày sinh</Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">Địa chỉ</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">Ngân hàng</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Số tài khoản
@@ -364,6 +365,9 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                   "vi-VN",
                   optionDateNoTime
                 )}
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                {item.placeOfResidence || ''}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.bankName}
