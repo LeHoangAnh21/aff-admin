@@ -171,6 +171,27 @@ export default function OrderDetailPage() {
                     />
                   </div>
                 )}
+                {data.insuranceType === '04' && (
+                  <div className="flex justify-center">
+                    {data.insuranceOrder.frontIdentifiCardImg && (
+                      <div className="flex flex-col gap-2">
+                        <img
+                          src={data.insuranceOrder.frontIdentifiCardImg}
+                          className="max-w-[400px] w-full h-auto mx-auto"
+                        />
+                      </div>
+                    )}
+
+                    {data.insuranceOrder.backIdentifiCardImg && (
+                      <div className="flex flex-col gap-2">
+                        <img
+                          src={data.insuranceOrder.backIdentifiCardImg}
+                          className="max-w-[400px] w-full h-auto mx-auto"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
                   <div className="opacity-75">Mã đơn hàng</div>
                   <div className="font-medium">{data?.orderCode}</div>
@@ -227,7 +248,7 @@ export default function OrderDetailPage() {
               </div> */}
                 <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
                   <div className="opacity-75">Tên khách hàng</div>
-                  <div className="font-medium">{data?.fullname}</div>
+                  <div className="font-medium">{data?.insuranceOrder?.fullName}</div>
                 </div>
                 <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
                   <div className="opacity-75">CCCD</div>

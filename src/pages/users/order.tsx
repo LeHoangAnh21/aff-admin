@@ -30,6 +30,18 @@ const insuranceTypeArr = [
     value: "03",
     label: "Bảo hiểm du lịch",
   },
+  {
+    value: "04",
+    label: "Bảo hiểm sức khoẻ",
+  },
+  {
+    value: "05",
+    label: "Bảo hiểm tai nạn",
+  },
+  {
+    value: "06",
+    label: "Bảo hiểm thân vỏ",
+  },
 ];
 
 const OrderPage = () => {
@@ -107,7 +119,7 @@ const OrderPage = () => {
 
       return res;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Làm mới truy vấn với queryKey
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast.success("Cập nhật trạng thái đơn hàng thành công!", {
@@ -259,7 +271,6 @@ const OrderPage = () => {
               <ListTable
                 data={data?.data}
                 isLoading={isPending}
-                isDisable={isDisable}
                 handleUpdate={updateOrderStatus}
               />
             </div>
@@ -275,7 +286,7 @@ const OrderPage = () => {
   );
 };
 
-const ListTable = ({ data, isLoading, handleUpdate, isDisable }) => {
+const ListTable = ({ data, isLoading, handleUpdate }) => {
   const navigate = useNavigate();
 
   const checkDisable = (orderStatus: string) => {
@@ -330,7 +341,7 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }) => {
             </Table.Cell>
           </Table.Row>
         ) : (
-          data?.map((item, index) => (
+          data?.map((item) => (
             <Table.Row
               key={item.id}
               className="hover:bg-gray-100 dark:hover:bg-gray-700"

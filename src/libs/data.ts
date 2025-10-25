@@ -119,8 +119,9 @@ export const insuranceType = [
     { title: "Bảo hiểm ô tô", value: "01" },
     { title: "Bảo hiểm xe máy", value: "02" },
     { title: "Bảo hiểm du lịch", value: "03" },
-    { title: "Bảo hiểm sức khoẻ", value: "05" },
-    { title: "Bảo hiểm viện phí", value: "06" },
+    { title: "Bảo hiểm sức khoẻ", value: "04" },
+    { title: "Bảo hiểm thân vỏ", value: "05" },
+    { title: "Bảo hiểm tai nạn", value: "06" },
 ];
 
 export const vehicleType: any = {
