@@ -276,8 +276,11 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
           TK trách nhiệm đang chờ (VNĐ)
         </Table.HeadCell> */}
         <Table.HeadCell className="p-4 text-center">
-          Người giới thiệu
+          Tên người giới thiệu
         </Table.HeadCell>{" "}
+        <Table.HeadCell className="p-4 text-center">
+          SĐT Người giới thiệu
+        </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Thời gian gia nhập
         </Table.HeadCell>
@@ -400,7 +403,10 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                 {item.pendingLiabilityAccount.toLocaleString("vi-VN")}
               </Table.Cell> */}
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
-                {""}
+                { item.referrer?.fullname || '' }
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                { item.referrer?.phoneNumber || '' }
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.createdAt).toLocaleString("vi-VN", optionDate)}
