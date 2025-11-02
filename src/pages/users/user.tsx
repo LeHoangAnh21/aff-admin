@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Badge, Breadcrumb, Table } from "flowbite-react";
+import {Badge, Breadcrumb, Button, Table} from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiHome } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
@@ -13,6 +13,7 @@ import Select from "react-select";
 import SearchInput from "@/components/SearchInput";
 import {toast} from "react-toastify";
 import {Link} from "react-router-dom";
+import {type} from "node:os";
 
 const UserPage = () => {
   const [sessionToken, setSessionToken] = useState("");
@@ -165,6 +166,8 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
   const [sessionToken, setSessionToken] = useState("");
   const [passwords, setPasswords] = useState<{ [key: string]: string }>({});
   const [roles, setRoles] = useState<{ [key: string]: string }>({});
+  // THÊM: State để lưu các row được check
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
   const handlePasswordChange = (userId: string, value: string) => {
     setPasswords(prev => ({ ...prev, [userId]: value }));
@@ -172,6 +175,19 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
 
   const handleRoleChange = (userId: string, value: string) => {
     setRoles(prev => ({ ...prev, [userId]: value }));
+  };
+
+  // THÊM: Handle checkbox toggle
+  const handleCheckboxChange = (userId: string) => {
+    setSelectedRows(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
   };
 
   useEffect(() => {
@@ -212,27 +228,46 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
       await Account.updatePass(sessionToken, { userId, password, validRole });
 
       toast.success("Cập nhật thông tin thành công!", {
-        autoClose: 5000,
+        autoClose: 3000,
       });
       setPasswords(prev => ({ ...prev, [userId]: '' }));
       setRoles(prev => ({ ...prev, [userId]: '' }));
       refetch()
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc báo cho lập trình viên!", {
-        autoClose: 5000,
+        autoClose: 3000,
       });
     }
   };
 
+  const handleUpdateSharingStatus = async (userId: string, type: string) => {
+    try {
+      await Account.updateSharingStatus(sessionToken, { userId, type });
+
+      toast.success("Cập nhật trạng thái thành công!", {
+        autoClose: 3000,
+      });
+      refetch()
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau hoặc báo cho lập trình viên!", {
+        autoClose: 3000,
+      });
+    }
+  }
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        {/* THÊM: Cột checkbox */}
+        <Table.HeadCell className="p-4 text-center w-12">
+
+        </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">Họ và tên</Table.HeadCell>
-        <Table.HeadCell className="p-4 text-center">Email</Table.HeadCell>
-        <Table.HeadCell className="p-4 text-center">Vai trò</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Số điện thoại
         </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">Vai trò</Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">Email</Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Căn cước công dân
         </Table.HeadCell>
@@ -257,27 +292,18 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
         <Table.HeadCell className="p-4 text-center">
           TK hoàn tiền (VNĐ)
         </Table.HeadCell>
-        {/*<Table.HeadCell className="p-4 text-center">*/}
-        {/*  TK tích lũy (VNĐ)*/}
-        {/*</Table.HeadCell>*/}
         <Table.HeadCell className="p-4 text-center">
           TK tiêu dùng (VNĐ)
         </Table.HeadCell>
-        {/* <Table.HeadCell className="p-4 text-center">
-          TK trách nhiệm (VNĐ)
-        </Table.HeadCell> */}
         <Table.HeadCell className="p-4 text-center">
           TK hoàn tiền đang chờ (VNĐ)
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           TK tiêu dùng đang chờ (VNĐ)
         </Table.HeadCell>
-        {/* <Table.HeadCell className="p-4 text-center">
-          TK trách nhiệm đang chờ (VNĐ)
-        </Table.HeadCell> */}
         <Table.HeadCell className="p-4 text-center">
           Tên người giới thiệu
-        </Table.HeadCell>{" "}
+        </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           SĐT Người giới thiệu
         </Table.HeadCell>
@@ -285,17 +311,22 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
           Thời gian gia nhập
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
+          Khoá đồng chia quản lý
+        </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
+          Khoá đồng chia toàn bộ
+        </Table.HeadCell>
+        <Table.HeadCell className="p-4 text-center">
           Cập nhật role mới
         </Table.HeadCell>
         <Table.HeadCell className="p-4 text-center">
           Cập nhật mật khẩu
         </Table.HeadCell>
-        {/* <Table.HeadCell className="p-4 text-center">Thao tác</Table.HeadCell> */}
       </Table.Head>
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
         {isLoading ? (
           <Table.Row>
-            <Table.Cell className="p-4" colSpan={20}>
+            <Table.Cell className="p-4" colSpan={25}> {/* THÊM: Tăng colspan */}
               <div role="status" className="w-full flex justify-center">
                 <svg
                   aria-hidden="true"
@@ -314,20 +345,32 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                   />
                 </svg>
                 <span className="sr-only">Loading...</span>
-              </div>{" "}
+              </div>
             </Table.Cell>
           </Table.Row>
         ) : (
           data.map((item) => (
             <Table.Row
               key={item.id}
-              className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              className={`${
+                selectedRows.has(item.id)
+                  ? 'bg-blue-50 dark:bg-[#974a96]'
+                  : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+              }`}
             >
+              <Table.Cell className="p-4 text-center">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 cursor-pointer"
+                  checked={selectedRows.has(item.id)}
+                  onChange={() => handleCheckboxChange(item.id)}
+                />
+              </Table.Cell>
               <Table.Cell className="whitespace-nowrap p-4 text-center text-base font-medium text-gray-900 dark:text-white">
                 {item.fullname}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-medium text-gray-900 dark:text-white">
-                {item.email}
+                {item.phoneNumber}
               </Table.Cell>
               <Table.Cell
                 className={`min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal `}
@@ -349,7 +392,7 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                 </Badge>
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-medium text-gray-900 dark:text-white">
-                {item.phoneNumber}
+                {item.email}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.identifiCard}
@@ -358,7 +401,7 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
                 {item.frontOfIdentifiCardImg
                   ? <Link to={`${item.frontOfIdentifiCardImg}`} target='_blank' className='text-blue-600 underline'>
                     Mặt trước
-                </Link> : ''}
+                  </Link> : ''}
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.backOfIdentifiCardImg ? <Link to={`${item.backOfIdentifiCardImg}`} target='_blank' className='text-blue-600 underline'>Mặt sau</Link> : ''}
@@ -387,9 +430,6 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.cashbackAccount.toLocaleString("vi-VN")}
               </Table.Cell>
-              {/*<Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">*/}
-              {/*  {item.accumulatedAccount.toLocaleString("vi-VN")}*/}
-              {/*</Table.Cell>*/}
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.consumerAccount.toLocaleString("vi-VN")}
               </Table.Cell>
@@ -399,9 +439,6 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {item.pendingConsumerAccount.toLocaleString("vi-VN")}
               </Table.Cell>
-              {/* <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
-                {item.pendingLiabilityAccount.toLocaleString("vi-VN")}
-              </Table.Cell> */}
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 { item.referrer?.fullname || '' }
               </Table.Cell>
@@ -410,6 +447,22 @@ const AllUsersTable = ({ data, isLoading, refetch }) => {
               </Table.Cell>
               <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
                 {new Date(item.createdAt).toLocaleString("vi-VN", optionDate)}
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                <Button
+                  color={ item.isBlockCommissionSharing ? 'green' : 'red' }
+                  onClick={() => handleUpdateSharingStatus(item.id, '01')}
+                >
+                  { item.isBlockCommissionSharing ? 'Mở đồng chia' : 'Khoá đồng chia'}
+                </Button>
+              </Table.Cell>
+              <Table.Cell className="min-w-[150px] whitespace-nowrap p-4 text-center text-base font-normal text-gray-900 dark:text-white">
+                <Button
+                  color={ item.isBlockAllCommissions ? 'green' : 'red' }
+                  onClick={() => handleUpdateSharingStatus(item.id, '02')}
+                >
+                  { item.isBlockAllCommissions ? 'Mở đồng chia' : 'Khoá đồng chia'}
+                </Button>
               </Table.Cell>
               <Table.Cell className="min-w-[250px] p-4">
                 <select

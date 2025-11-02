@@ -61,6 +61,20 @@ const Account = class {
         return response;
     }
 
+    static async updateSharingStatus(access_token, body) {
+        const response: any = await ServiceAPI.patch(`/api/auth/${body.userId}/block`, {type: body.type}, {
+            headers: {
+                "Authorization": "Bearer " + access_token
+            }
+        })
+
+        if ('error' in response) {
+            throw new Error(response.message);
+        }
+
+        return response;
+    }
+
     static async getUserInfo(access_token) {
         try {
             const response: any = await ServiceAPI.get('/api/auth/admin', {
