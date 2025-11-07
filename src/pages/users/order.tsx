@@ -44,6 +44,13 @@ const insuranceTypeArr = [
   },
 ];
 
+const PAYMENT_STATUS_CONFIG = {
+  PENDING: { color: "warning", label: "Đang chờ" },
+  REJECTED: { color: "failure", label: "Đã hủy" },
+  REFUNDED: { color: "failure", label: "Đã hoàn tiền" },
+  SUCCESS: { color: "success", label: "Thành công" }
+};
+
 const OrderPage = () => {
   const [isDisable, setIsDisable] = useState(false);
   const [sessionToken] = useState(localStorage.getItem("userAccount") || "");
@@ -291,7 +298,7 @@ const ListTable = ({ data, isLoading, handleUpdate }) => {
 
   const checkDisable = (orderStatus: string) => {
     return (
-      ["COMPLETED", "CANCELED", "REJECTED"].find(
+      ["COMPLETED", "CANCELLED", "REJECTED"].find(
         (value) => value === orderStatus
       ) !== undefined
     );
@@ -373,38 +380,16 @@ const ListTable = ({ data, isLoading, handleUpdate }) => {
                     )[0]?.label
                   }
                 </Badge>
-                {/* {item.orderStatus === "PENDING" ? (
-                  <Badge className="justify-center" color="warning">
-                    Đang chờ
-                  </Badge>
-                ) : item.orderStatus === "REJECTED" ? (
-                  <Badge className="justify-center" color="failure">
-                    Đã từ chối
-                  </Badge>
-                ) : (
-                  <Badge className="justify-center" color="success">
-                    Thành công
-                  </Badge>
-                )} */}
               </Table.Cell>
               <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-                {item.paymentStatus === "PENDING" ? (
-                  <Badge className="justify-center" color="warning">
-                    Đang chờ
-                  </Badge>
-                ) : item.paymentStatus === "REJECTED" ? (
-                  <Badge className="justify-center" color="failure">
-                    Đã hủy
-                  </Badge>
-                ) : item.paymentStatus === "REFUNDED" ? (
-                  <Badge className="justify-center" color="failure">
-                    Đã hoàn tiền
-                  </Badge>
-                ) : (
-                  <Badge className="justify-center" color="success">
-                    Thành công
-                  </Badge>
-                )}
+                {(() => {
+                  const config = PAYMENT_STATUS_CONFIG[item.paymentStatus] || PAYMENT_STATUS_CONFIG.SUCCESS;
+                  return (
+                    <Badge className="justify-center" color={config.color}>
+                      {config.label}
+                    </Badge>
+                  );
+                })()}
               </Table.Cell>
               <Table.Cell className="whitespace-nowrap text-center p-4 text-base font-normal text-gray-900 dark:text-white">
                 {item.price.toLocaleString("vi-VN")}

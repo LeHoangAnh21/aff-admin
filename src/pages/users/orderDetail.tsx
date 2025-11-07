@@ -15,6 +15,11 @@ import { HiHome } from "react-icons/hi";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import CarOrderDetail from "@/pages/users/OrderDetailUI/CarOrderDetail";
+import MotorOrderDetail from "@/pages/users/OrderDetailUI/MotorOrderDetail";
+import TravelOrderDetail from "@/pages/users/OrderDetailUI/TravelOrderDetail";
+import HealthOrderDetail from "@/pages/users/OrderDetailUI/HealthOrderDetail";
+import BodyShellOrderDetail from "@/pages/users/OrderDetailUI/BodyShellOrderDetail";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -74,6 +79,23 @@ export default function OrderDetailPage() {
       setSessionToken(localStorage.getItem("userAccount") || "");
     }
   }, []);
+
+  const renderOrderDetailUi = (data: any) => {
+    switch (data.insuranceType) {
+      case '01':
+        return <CarOrderDetail data={data} />
+      case '02':
+        return <MotorOrderDetail data={data} />
+      case '03':
+        return <TravelOrderDetail data={data} />
+      case '04':
+        return <HealthOrderDetail data={data} />
+      case '06':
+        return <BodyShellOrderDetail data={data} />
+      default:
+        return <div></div>;
+    }
+  }
 
   return (
     <NavbarSidebarLayout isFooter={false}>
@@ -148,224 +170,7 @@ export default function OrderDetailPage() {
           </div>
         ) : (
           <div className="flex-1 flex py-10">
-            <div
-              className="max-w-2xl w-full rounded-lg p-5 m-auto"
-              style={{
-                boxShadow:
-                  "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
-              }}
-            >
-              <div className="text-gray-900 dark:text-white">
-                <h1 className="mb-10 text-center text-xl font-semibold text-orange-500">
-                  {
-                    insuranceType.find(
-                      (item) => item.value === data.insuranceType
-                    )?.title
-                  }
-                </h1>
-                {data.insuranceOrder.image && (
-                  <div>
-                    <img
-                      src={data.insuranceOrder.image}
-                      className="max-w-[400px] w-full h-auto mx-auto"
-                    />
-                  </div>
-                )}
-                {data.insuranceType === '04' && (
-                  <div className="flex justify-center">
-                    {data.insuranceOrder.frontIdentifiCardImg && (
-                      <div className="flex flex-col gap-2">
-                        <img
-                          src={data.insuranceOrder.frontIdentifiCardImg}
-                          className="max-w-[400px] w-full h-auto mx-auto"
-                        />
-                      </div>
-                    )}
-
-                    {data.insuranceOrder.backIdentifiCardImg && (
-                      <div className="flex flex-col gap-2">
-                        <img
-                          src={data.insuranceOrder.backIdentifiCardImg}
-                          className="max-w-[400px] w-full h-auto mx-auto"
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Mã đơn hàng</div>
-                  <div className="font-medium">{data?.orderCode}</div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Trạng thái đơn</div>
-                  <div className={`font-medium`}>
-                    {
-                      orderStatus.filter(
-                        (item) => item.defaultValue === data?.orderStatus
-                      )[0]?.label
-                    }
-                  </div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Trạng thái thanh toán</div>
-                  <div
-                    className={`${
-                      data?.paymentStatus === "REJECTED"
-                        ? "text-[#fbd5d5]"
-                        : data?.paymentStatus === "PENDING"
-                        ? "text-[#fce96a]"
-                        : "text-[#bcf0da]"
-                    }`}
-                  >
-                    {data?.paymentStatus === "REJECTED"
-                      ? "Đã hủy"
-                      : data?.paymentStatus === "PENDING"
-                      ? "Đang chờ"
-                      : "Thành công"}
-                  </div>
-                </div>{" "}
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Mã đơn hàng</div>
-                  <div className="font-medium">{data?.orderCode}</div>
-                </div>
-                {/* <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                <div className="opacity-75">Nhà bảo hiểm</div>
-                <div className="font-medium">Bảo hiểm PVI</div>
-              </div> */}
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Sản phẩm</div>
-                  <div className="font-medium">
-                    {
-                      insuranceType.filter(
-                        (item) => item.value === data?.insuranceType
-                      )[0]?.title
-                    }
-                  </div>
-                </div>
-                {/* <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                <div className="opacity-75">Thời hạn hợp đồng</div>
-                <div className="font-medium">06/12/2024 - 05/12/2025</div>
-              </div> */}
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Tên khách hàng</div>
-                  <div className="font-medium">{data?.insuranceOrder?.fullName}</div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">CCCD</div>
-                  <div className="font-medium">
-                    {data?.insuranceOrder?.identifiCard}
-                  </div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Email</div>
-                  <div className="font-medium">
-                    {data.insuranceOrder?.email}
-                  </div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Số điện thoại</div>
-                  <div className="font-medium">
-                    {data.insuranceOrder?.phoneNumber}
-                  </div>
-                </div>
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Thời gian tạo đơn</div>
-                  <div className="font-medium">
-                    {new Date(data.createdAt).toLocaleString(
-                      "vi-VN",
-                      optionDate
-                    )}
-                  </div>
-                </div>
-                {(data.insuranceType === "01" ||
-                  data.insuranceType === "02") && (
-                  <>
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">
-                        {data.insuranceType === "01"
-                          ? "Mục đích sử dụng"
-                          : "Loại xe"}
-                      </div>
-                      <div className="font-medium">
-                        {
-                          vehicleType[data.insuranceType].find(
-                            (item) =>
-                              item.value === data.insuranceOrder?.vehicleType
-                          )?.label
-                        }
-                      </div>
-                    </div>
-                    {!data?.notLicensePlate && (
-                      <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                        <div className="opacity-75">Biển số xe</div>
-                        <div className="font-medium">
-                          {data.insuranceOrder?.licensePlate}
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">Số khung</div>
-                      <div className="font-medium">
-                        {data.insuranceOrder?.chassisNumber}
-                      </div>
-                    </div>
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">Số máy</div>
-                      <div className="font-medium">
-                        {data.insuranceOrder?.engineNumber}
-                      </div>
-                    </div>
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">Chủ xe</div>
-                      <div className="font-medium">Nguyễn Văn A</div>
-                    </div>
-                  </>
-                )}
-                {data.insuranceType === "03" && (
-                  <>
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">Quốc gia</div>
-                      <div className="text-justify font-medium">
-                        {
-                          country.find(
-                            (item) =>
-                              item.value === data.insuranceOrder?.country
-                          )?.label
-                        }
-                      </div>
-                    </div>
-                    <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                      <div className="opacity-75">Số người tham gia</div>
-                      <div className="text-justify font-medium">
-                        {data.insuranceOrder?.participantAmount}
-                      </div>
-                    </div>
-                  </>
-                )}
-                <div className="flex justify-between border-b-1 border-gray-300 py-[10px] gap-5">
-                  <div className="opacity-75">Địa chỉ thường trú</div>
-                  <div className="text-justify font-medium">
-                    {data.insuranceOrder?.address}
-                  </div>
-                </div>
-                <div className="flex justify-between py-[10px] gap-5">
-                  <div className="opacity-75">Phí bảo hiểm</div>
-                  <div className="font-medium">
-                    {data?.price.toLocaleString("vi-VN")}đ
-                  </div>
-                </div>
-                {data.insuranceLink && (
-                  <div className="mt-5">
-                    <Link
-                      to={data.insuranceLink}
-                      className="underline block text-center text-blue-600"
-                    >
-                      Kết quả bảo hiểm
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
+            {renderOrderDetailUi(data)}
           </div>
         )}
       </div>
