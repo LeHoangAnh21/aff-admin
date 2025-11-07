@@ -110,10 +110,18 @@ export default function HealthOrderDetail ({ data }: { data: any }) {
         <h1 className="mb-10 text-center text-xl font-semibold text-orange-500">
           Bảo hiểm sức khoẻ
         </h1>
-        {data.insuranceOrder.image && (
+        {data.insuranceOrder.frontIdentifiCardImg && (
           <div>
             <img
-              src={data.insuranceOrder.image}
+              src={data.insuranceOrder.frontIdentifiCardImg}
+              className="max-w-[400px] w-full h-auto mx-auto"
+            />
+          </div>
+        )}
+        {data.insuranceOrder.backIdentifiCardImg && (
+          <div>
+            <img
+              src={data.insuranceOrder.backIdentifiCardImg}
               className="max-w-[400px] w-full h-auto mx-auto"
             />
           </div>

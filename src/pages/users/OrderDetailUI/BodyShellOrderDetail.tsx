@@ -49,12 +49,12 @@ export default function BodyShellOrderDetail ({ data }: { data: any }) {
     >
       <div className="text-gray-900 dark:text-white">
         <h1 className="mb-10 text-center text-xl font-semibold text-orange-500">
-          Bảo hiểm du lịch
+          Bảo hiểm thân vỏ
         </h1>
-        {data.insuranceOrder.image && (
+        {data.insuranceOrder.registrationImage && (
           <div>
             <img
-              src={data.insuranceOrder.image}
+              src={data.insuranceOrder.registrationImage}
               className="max-w-[400px] w-full h-auto mx-auto"
             />
           </div>
