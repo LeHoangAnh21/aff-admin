@@ -52,14 +52,6 @@ export const orderStatus = [
         bgColor: "#d1d5db",
         defaultValue: "PROCESSING",
     },
-    // {
-    //     value: "03",
-    //     label: "Đang vận chuyển",
-    //     color: "gray",
-    //     bgColor: "#c3ddfd",
-    //     defaultValue: "INSHIPPING",
-    // },
-
     {
         value: "04",
         label: "Hoàn thành",
@@ -67,7 +59,6 @@ export const orderStatus = [
         bgColor: "#bcf0da",
         defaultValue: "COMPLETED",
     },
-
     {
         value: "05",
         label: "Đã huỷ",
@@ -75,7 +66,6 @@ export const orderStatus = [
         bgColor: "#fbd5d5",
         defaultValue: "CANCELLED",
     },
-
     {
         value: "06",
         label: "Đã từ chối",
@@ -120,8 +110,8 @@ export const insuranceType = [
     { title: "Bảo hiểm xe máy", value: "02" },
     { title: "Bảo hiểm du lịch", value: "03" },
     { title: "Bảo hiểm sức khoẻ", value: "04" },
-    { title: "Bảo hiểm thân vỏ", value: "05" },
-    { title: "Bảo hiểm tai nạn", value: "06" },
+    { title: "Bảo hiểm tai nạn", value: "05" },
+    { title: "Bảo hiểm thân vỏ", value: "06" },
 ];
 
 export const vehicleType: any = {

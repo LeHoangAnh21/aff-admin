@@ -268,7 +268,7 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }) => {
             </Table.Cell>
           </Table.Row>
         ) : (
-          data?.map((item, index) => (
+          data?.map((item) => (
             <Table.Row
               key={item.id}
               className="hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -309,7 +309,7 @@ const ListTable = ({ data, isLoading, handleUpdate, isDisable }) => {
                   <Badge className="justify-center" color="failure">
                     Đã từ chối
                   </Badge>
-                ) : item.status === "CANCELED" ? (
+                ) : item.status === "CANCELLED" ? (
                   <Badge className="justify-center" color="failure">
                     Đã hủy
                   </Badge>
