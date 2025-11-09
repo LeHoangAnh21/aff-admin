@@ -20,6 +20,7 @@ import MotorOrderDetail from "@/pages/users/OrderDetailUI/MotorOrderDetail";
 import TravelOrderDetail from "@/pages/users/OrderDetailUI/TravelOrderDetail";
 import HealthOrderDetail from "@/pages/users/OrderDetailUI/HealthOrderDetail";
 import BodyShellOrderDetail from "@/pages/users/OrderDetailUI/BodyShellOrderDetail";
+import AccidentOrderDetail from "@/pages/users/OrderDetailUI/AccidentOrderDetail";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -90,6 +91,8 @@ export default function OrderDetailPage() {
         return <TravelOrderDetail data={data} />
       case '04':
         return <HealthOrderDetail data={data} />
+      case '05':
+        return <AccidentOrderDetail data={data} />
       case '06':
         return <BodyShellOrderDetail data={data} />
       default:
