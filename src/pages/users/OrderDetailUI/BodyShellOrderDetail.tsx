@@ -37,6 +37,15 @@ export const CarIntendedUse = [
   { value: CarIntendedUseConst.PERSONAL, label: 'Xe không kinh doanh' },
 ] as const;
 
+export const BodyShellDeductibleLabel = [
+  { value: '01', label: 'Miễn thường 500k/vụ' },
+  { value: '02', label: 'Miễn thường 1 triệu/vụ' },
+]
+
+export const bodyShellCopaymentLabel = [
+  { value: '01', label: 'Đồng chi trả 50/50' },
+]
+
 export default function BodyShellOrderDetail ({ data }: { data: any }) {
 
   const buyerInfo = [
@@ -73,6 +82,18 @@ export default function BodyShellOrderDetail ({ data }: { data: any }) {
         : '-'
     },
     { label: 'Thời hạn', value: `${data.insuranceOrder?.duration} năm` },
+    {
+      label: 'Loại miễn thường',
+      value: data.insuranceOrder?.deductibleInsu
+        ?  BodyShellDeductibleLabel.find(item => item.value === data.insuranceOrder?.deductibleInsu)?.label
+        : 'Không có'
+    },
+    {
+      label: 'Đồng chi trả',
+      value: data.insuranceOrder?.coPaymentInsu
+        ?  bodyShellCopaymentLabel.find(item => item.value === data.insuranceOrder?.coPaymentInsu)?.label
+        : 'Không có'
+    }
   ];
 
   return (
