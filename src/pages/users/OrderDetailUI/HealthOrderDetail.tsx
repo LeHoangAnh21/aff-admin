@@ -19,6 +19,31 @@ export const relationships = [
 ];
 
 export default function HealthOrderDetail ({ data }: { data: any }) {
+  const birthDate = new Date(data.insuranceOrder.dateOfBirthOwner);
+  const today = new Date();
+
+  // Tính số milliseconds chênh lệch
+  const diffMs = today.getTime() - birthDate.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+// Tính tuổi
+  const ageYears = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  const dayDiff = today.getDate() - birthDate.getDate();
+
+  let age: string;
+
+  if (ageYears > 1 || (ageYears === 1 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)))) {
+    // Đã đủ 1 tuổi trở lên
+    let actualAge = ageYears;
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      actualAge--;
+    }
+    age = `${actualAge} tuổi`;
+  } else {
+    // Chưa đủ 1 tuổi - tính theo ngày
+    age = `${diffDays} ngày tuổi`;
+  }
 
   const getRelationshipLabel = (key: string): string => {
     const relationship = relationships.find(r => r.key === key);
@@ -56,7 +81,7 @@ export default function HealthOrderDetail ({ data }: { data: any }) {
         ? new Date(data.insuranceOrder.dateOfBirthOwner).toLocaleString('vi-VN', optionDateNoTime)
         : '-'
     },
-    { label: 'Tuổi', value: data.insuranceOrder?.yearOldOwner },
+    { label: 'Tuổi', value: age ? age : '' },
     { label: 'Giới tính', value: data.insuranceOrder?.sexOwner === 'NU' ? 'Nữ' : 'Nam' },
     { label: 'Số CCCD', value: data.insuranceOrder?.identifiCardOwner },
     {
@@ -88,6 +113,10 @@ export default function HealthOrderDetail ({ data }: { data: any }) {
     {
       label: 'Quan hệ với người mua',
       value: getRelationshipLabel(data.insuranceOrder?.relationshipWithBuyer)
+    },
+    {
+      label: 'Bố hoặc Mẹ đã mua bảo hiểm',
+      value: data.insuranceOrder?.hasParentHealthInsurance ? 'Có' : 'Không',
     },
   ];
 
