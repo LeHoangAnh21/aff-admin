@@ -129,6 +129,29 @@ export default function AccidentOrderDetail ({ data }: { data: any }) {
           : <InfoSection title="Thông tin bên mua" data={buyerInfo} />
         }
         <InfoSection title="Thông tin bên được bảo hiểm" data={ownerInfo} />
+
+        {data.insuranceOrder?.attachments.length > 0 && (
+          <>
+            <div className='flex justify-between py-[10px] mt-5 italic text-[#f97317]'>
+              <div className='opacity-75'>Danh sách file đính kèm (Bấm để mở hoặc tải xuống)</div>
+            </div>
+            {data.insuranceOrder?.attachments.map((file: any, index: any) => (
+              <Link
+                to={file}
+                target="_blank"
+                key={index}
+                className="flex items-center mb-2 gap-3 p-3 rounded-lg border hover:text-gray-900 border-gray-200 hover:bg-gray-100 transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium  truncate" title={index}>
+                    File số {index + 1}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </>
+        )}
+
         <InfoSection title="Thông tin bảo hiểm" data={insuranceInfo} />
 
         {data.insuranceLink && (
