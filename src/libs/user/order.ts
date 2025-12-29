@@ -30,12 +30,31 @@ const Order = class {
         return response;
     }
 
-    static async linkInsurance(id: string, payload: { insuranceLink: string }, sessionToken: string | null) {
+    static async linkInsurance(id: string, payload: { resultType: string, insuranceLink?: string, listInsuFile?: string[] }, sessionToken: string | null) {
         const response: any = await ServiceAPI.patch(`/api/orders/${id}/insurance-link`, payload, {
             headers: {
                 "Authorization": "Bearer " + sessionToken
             }
         })
+
+        if ('status' in response) {
+            throw new Error(response.message);
+        }
+
+        return response;
+    }
+
+    static async uploadInsuFile(formData: FormData, sessionToken: string | null) {
+        const response: any = await ServiceAPI.post(
+          `/api/uploads/upload-insu-result`,
+          formData,
+          {
+              headers: {
+                  "Authorization": "Bearer " + sessionToken,
+                  "Content-Type": "multipart/form-data",
+              }
+          }
+        )
 
         if ('status' in response) {
             throw new Error(response.message);
